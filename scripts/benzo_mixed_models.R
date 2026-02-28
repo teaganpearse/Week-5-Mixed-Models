@@ -1,9 +1,7 @@
 # Author: Teagan Pearse
 # Date: 27/02/2026
 
-# FOUNDATIONS OF MIXED MODELLING
-
-# Benzo dataset
+# Purpose: Assess the effect of toxin concentration on larval detoxification capacity, accounting for batch-level variation using a linear mixed-effects model.
 
 # ---- Setup ----
 library(tidyverse)
@@ -173,7 +171,7 @@ ggsave(here("figures", "benzo_group_final.pdf"),
 # R² for mixed model
 r.squaredGLMM(mixed_model)
   # R²m = 0.10 (toxin only); R²c = 0.70 (including batch random effects)
-  # Fixed effects explain ~10% of variance, full mixed model explains ~70%
+  # Fixed effects explain ~10% of variance; full mixed model explains ~70%
   # Random effects add considerable additional variance and improve overall model fit
 
 # Model diagnostics
