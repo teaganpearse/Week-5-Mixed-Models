@@ -26,13 +26,13 @@ dolphins <- dolphins %>%
 dolphmod <- lmer(vt ~ bodymass + direction + (1|animal), data = dolphins)
 summary(dolphmod)
   # Fixed effects: bodymass = 0.017 (SE = 0.003, p < 0.001); direction (inhalation vs exhalation) = 1.11 (SE = 0.20, p < 0.001)
-  # Random effects: animal variance = 1.04 (SD = 1.02); residual variance = 1.16 (SD = 1.08); ICC ≈ 0.47 (≈47% of variance attributable to differences between dolphins)
+  # Random effects: animal variance = 1.04 (SD = 1.02); residual variance = 1.16 (SD = 1.08); ICC ≈ 0.47 (≈ 47% of variance attributable to differences between dolphins)
   # Tidal volume increases with body mass and is higher during inhalation
 
 # ---- Model fit and diagnostics ----
 r.squaredGLMM(dolphmod)
   # R²m = 0.41; R²c = 0.69
-  # Fixed effects explain ~41% of variance; full model explains ~69%
+  # Fixed effects explain ~41% of variance; full model explains ~ 69%
   # Random effects substantially increase explained variance
 
 check_model(dolphmod, detrend = FALSE)
