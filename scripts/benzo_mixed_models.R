@@ -69,7 +69,7 @@ benzo_by_batch_boxplot <- ggplot(benzo, aes(x = group, y = detox_exp, fill = gro
         panel.grid.major = element_blank())
 
 ggsave(here("figures", "benzo_by_batch_boxplot.pdf"),
-       plot = benzo_boxplot, width = 20, height = 15, units = "cm")
+       plot = benzo_by_batch_boxplot, width = 20, height = 15, units = "cm")
 
 # ---- Fit models ----
   
@@ -106,7 +106,9 @@ benzo_population_pred <- emmeans(mixed_model,
                                    at = list(benzo_um = seq(0, 10, 0.5))) |>
   as.data.frame() |>
   ggplot(aes(x = benzo_um, y = emmean)) +
-  geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL, alpha = 0.3)) +
+  geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL),
+              fill = "steelblue",
+              alpha = 0.3) +
   geom_line(linewidth = 1) +
   labs(
     x = "Toxin concentration (µM)",
@@ -125,7 +127,10 @@ benzo_population_points <- ggpredict(mixed_model,
                                        terms = "benzo_um",
                                        type = "fixed") |>
   plot(show_data = TRUE) +
-  labs(x = "Toxin concentration (µM)",
+  scale_fill_manual(values = "steelblue") +
+  scale_colour_manual(values = "black") +
+  labs(title = "Population-level redicted values of detoxification capacity",
+       x = "Toxin concentration (µM)",
        y = "Detoxification capacity") +
   theme_bw() +
   theme(panel.border = element_rect(color="black"),
@@ -136,16 +141,17 @@ ggsave(here("figures", "benzo_population_points.pdf"),
        plot = benzo_population_points, width = 20, height = 15, units = "cm")
 
 # Group-specific predictions
-benzo_group_predictions <- ggpredict(mixed_model,
+benzo_group_pred <- ggpredict(mixed_model,
                                        terms = c("benzo_um", "group"),
                                        type = "random") |>
   plot(show_data = TRUE) +
   facet_wrap(~group) +
-  labs(x = "Toxin concentration (µM)",
+  labs(title = "Group-specific predictions of detoxification capacity",
+       x = "Toxin concentration (µM)",
        y = "Detoxification capacity")
 
-ggsave(here("figures", "benzo_group_predictions.pdf"),
-       plot = benzo_group_predictions, width = 20, height = 15, units = "cm")
+ggsave(here("figures", "benzo_group_pred.pdf"),
+       plot = benzo_group_pred, width = 20, height = 15, units = "cm")
 
 # Final group predictions
 benzo_group_final <- ggpredict(mixed_model,
@@ -156,7 +162,7 @@ benzo_group_final <- ggpredict(mixed_model,
   scale_colour_brewer(palette = "Dark2") +
   scale_fill_brewer(palette = "Dark2") +
   facet_wrap(~group) +
-  labs(
+  labs(title = "Group-specific predictions of detoxification capacity",
     x = "Toxin concentration (µM)",
     y = "Detoxification capacity"
   ) +
@@ -186,4 +192,4 @@ tab_model(mixed_model,
   # mixed model results table including fixed effects, random effects, and model fit
 
 # ---- Write up ----
-# A linear mixed-effects model was fitted using REML estimation in the lmerTest package, to investigate how dietary benzoxazinoid concentration influences larval detoxification capacity. Experimental batch was included as a random intercept. Detoxification capacity increased by 2.03 units per µM toxin (95% CI: 1.69-2.36, p < 0.001). Between-batch variance (σ² = 205) exceeded residual variance (σ² = 101). The model included 430 observations across 5 batches. Fixed effects explained 10% of variance (R²m = 0.10), while the full model explained 70% (R²c = 0.70). Diagnostic checks indicated no major violations of model assumptions.
+# A linear mixed-effects model was fitted using REML in the lmerTest package to investigate how dietary benzoxazinoid concentration influences larval detoxification capacity. Experimental batch was included as a random intercept to account for between-batch variation. Degrees of freedom were estimated using Satterthwaite's method. Detoxification capacity increased by 2.03 units per µM toxin (95% CI: 1.69-2.36, p < 0.001). Between-batch variance (σ² = 205) exceeded residual variance (σ² = 101). The model included 430 observations across 5 batches. Fixed effects explained 10% of variance (R²m = 0.10), while the full model explained 70% (R²c = 0.70). Diagnostic checks indicated no major violations of model assumptions.

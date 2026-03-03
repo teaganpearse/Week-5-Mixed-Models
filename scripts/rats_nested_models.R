@@ -1,7 +1,7 @@
 # Author: Teagan Pearse
 # Date: 01/03/2026
 
-# Purpose: Test treatment effects on liver glycogen while accounting for nested sampling (liver samples nested within rats) using a linear mixed-effects model
+# Purpose: Investigate treatment effects on liver glycogen in rats, accounting for nested liver samples using a linear mixed-effects model.
 
 # ---- Setup ----
 library(tidyverse)
@@ -50,12 +50,19 @@ ggsave(here("figures", "rats_treatment_pred.pdf"),
        plot = rats_treatment_pred, width = 20, height = 15, units = "cm")
 
 # Rat-specific predictions showing individual variation
-rats_by_rat_pred <- ggpredict(rats_correct, 
+rat_specific_glycogen_pred <- ggpredict(rats_correct, 
                               terms = c("Treatment", "Rat"),
                               type = "random") |>
-  plot(show_data = TRUE)
+  plot(show_data = TRUE) +
+  labs(title = "Rat-specific predictions of liver glycogen across treatments",
+       x = "Treatment",
+       y = "Glycogen")
 
-print(rats_by_rat_pred)
+print(rat_specific_glycogen_pred)
 
-ggsave(here("figures", "rats_by_rat_pred.pdf"),
-       plot = rats_by_rat_pred, width = 20, height = 15, units = "cm")
+ggsave(here("figures", "rat_specific_glycogen_pred.pdf"),
+       plot = rat_specific_glycogen_pred, width = 20, height = 15, units = "cm")
+
+# ---- Write up ----
+# A linear mixed-effects model was fitted using REML in the lmerTest package to investigate treatment effects on liver glycogen, accounting for nested sampling of liver sections within rats. The model included 36 observations from 6 rats and 18 liver samples, with random intercepts for rats and liver samples nested within rats (1|Rat/Liver). Degrees of freedom were estimated using Satterthwaite's method. Treatment 2 (β = 10.50, 95% CI: -6.17-27.17, p = 0.213) and Treatment 3 (β = -5.33, 95% CI = -22.00-11.34, p = 0.482) did not significantly differ from Treatment 1. Variance components were 36.06 (rat), 14.17 (liver within rat), and 21.17 (residual). Diagnostics indicated no major assumption violations.
+

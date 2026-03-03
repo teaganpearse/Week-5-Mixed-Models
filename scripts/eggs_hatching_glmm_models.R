@@ -1,7 +1,7 @@
 # Author: Teagan Pearse
 # Date: 02/03/2026
 
-# Purpose: Investigate hatching success across genetic crosses, addressing overdispersion using binomial generalised linear mixed models
+# Purpose: Investigate how genetic cross type influences hatching success, addressing overdispersion using binomial generalised linear mixed models
 
 # ---- Setup ----
 library(tidyverse)
@@ -78,7 +78,13 @@ summary(binomial_mixed_rep_fem)
 
 # ---- Visualise results ----
 egg_cross_population_pred <- ggpredict(binomial_mixed_rep_fem, terms = "cross") |>
-  plot()
+  plot() +
+  labs(title = "Population-level predictions of egg hatching probability",
+       x = "Genetic cross",
+       y = "Predicted hatching probability")
 
 ggsave(here("figures", "egg_cross_population_pred.pdf"),
        plot = egg_cross_population_pred, width = 20, height = 15, units = "cm")
+
+# ---- Write up ----
+# A binomial generalised linear mixed model (GLMM) was fitted using maximum likelihood in the lme4 package to examine how genetic cross influences egg hatching success. Overdispersion was detected in a standard binomial GLM (dispersion = 1.70, p < 0.001), so replicate and female (nested within replicate) were included as random intercepts. The final model included 55 observations from 5 replicates and 34 females. Cross B (β = 0.93, p < 0.001) and Cross C (β = 0.70, p < 0.001) showed higher log-odds of hatching than Cross A. Female-level variance (1.72) exceeded replicate variance (0.01). Overdispersion was resolved (1.15, p = 0.224).
